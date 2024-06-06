@@ -19,32 +19,26 @@
                     clearInterval(stateCheck);
                     w.luma.init(u);
                 }
-            });
+            }, 100);
         })(window, document, 'script', '662159dec1f7560017a73797');
     </script>
     <script>
     window.onload = function() {
         var iframe = document.getElementById('lumabot-iframe');
-        var iframeDocument = iframe.contentWindow.document;
-
-        // Check if the iframe has finished loading
-        if (iframeDocument.readyState === 'complete') {
-            // Access the elements within the iframe and apply CSS to hide the desired element
-            var elementToHide = iframeDocument.querySelector('.jss1180');
-            if (elementToHide) {
-                elementToHide.style.display = 'none';
-            }
-        } else {
-            // If the iframe hasn't finished loading, wait for it to load completely
-            iframe.onload = function() {
-                var elementToHide = iframeDocument.querySelector('.jss1180');
-                if (elementToHide) {
-                    elementToHide.style.display = 'none';
+        if (iframe) {
+            var checkIframeLoaded = setInterval(() => {
+                var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDocument.readyState === 'complete') {
+                    clearInterval(checkIframeLoaded);
+                    var elementToHide = iframeDocument.querySelector('.jss1180');
+                    if (elementToHide) {
+                        elementToHide.style.display = 'none';
+                    }
                 }
-            };
+            }, 100);
         }
     };
-</script>
+    </script>
 </head>
 
 <body>
