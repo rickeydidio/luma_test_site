@@ -30,14 +30,14 @@
         // Check if the iframe has finished loading
         if (iframeDocument.readyState === 'complete') {
             // Access the elements within the iframe and apply CSS to hide the desired element
-            var elementToHide = iframeDocument.querySelector('.jss3662');
+            var elementToHide = iframeDocument.querySelector('.jss1180');
             if (elementToHide) {
                 elementToHide.style.display = 'none';
             }
         } else {
             // If the iframe hasn't finished loading, wait for it to load completely
             iframe.onload = function() {
-                var elementToHide = iframeDocument.querySelector('.jss3662');
+                var elementToHide = iframeDocument.querySelector('.jss1180');
                 if (elementToHide) {
                     elementToHide.style.display = 'none';
                 }
