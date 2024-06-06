@@ -14,63 +14,53 @@
                 r = Math.ceil(new Date() / 3e5) * 3e5;
             j.src = 'https://bot.lumahealthstatic.com/widgets/lumabot.min.js?r=' + r;
             f.parentNode.insertBefore(j, f);
+            
+            function hideElementInIframe() {
+                var iframe = document.getElementById('lumabot-iframe');
+                if (iframe) {
+                    var iframeDocument;
+                    try {
+                        iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        if (iframeDocument.readyState === 'complete') {
+                            var elementToHide = iframeDocument.querySelector('.jss1180');
+                            if (elementToHide) {
+                                elementToHide.style.display = 'none';
+                            } else {
+                                // Element not found, retry after a short delay
+                                setTimeout(hideElementInIframe, 100);
+                            }
+                        } else {
+                            // Iframe is not fully loaded, retry after a short delay
+                            setTimeout(hideElementInIframe, 100);
+                        }
+                    } catch (e) {
+                        console.error('Could not access iframe content:', e);
+                        // Retry after a short delay
+                        setTimeout(hideElementInIframe, 100);
+                    }
+                } else {
+                    // Iframe not found, retry after a short delay
+                    setTimeout(hideElementInIframe, 100);
+                }
+            }
+
             let stateCheck = setInterval(() => {
                 if (document.readyState === 'complete') {
                     clearInterval(stateCheck);
                     w.luma.init(u);
+
+                    // Listen for iframe creation after widget interaction
+                    document.addEventListener('click', function(event) {
+                        var widgetButton = event.target.closest('.your-widget-button-selector'); // Replace with actual selector for the widget button
+                        if (widgetButton) {
+                            setTimeout(function() {
+                                hideElementInIframe();
+                            }, 100); // Slight delay to ensure iframe starts loading
+                        }
+                    });
                 }
             }, 100);
         })(window, document, 'script', '662159dec1f7560017a73797');
-    </script>
-    <script>
-        function hideElementInIframe() {
-            var iframe = document.getElementById('lumabot-iframe');
-            if (iframe) {
-                var iframeDocument;
-                try {
-                    iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                } catch (e) {
-                    console.error('Could not access iframe content:', e);
-                    return;
-                }
-                if (iframeDocument.readyState === 'complete') {
-                    var elementToHide = iframeDocument.querySelector('.jss1180');
-                    if (elementToHide) {
-                        elementToHide.style.display = 'none';
-                    } else {
-                        // Element not found, retry after a short delay
-                        setTimeout(hideElementInIframe, 100);
-                    }
-                } else {
-                    // Iframe is not fully loaded, retry after a short delay
-                    setTimeout(hideElementInIframe, 100);
-                }
-            } else {
-                // Iframe not found, retry after a short delay
-                setTimeout(hideElementInIframe, 100);
-            }
-        }
-
-        function checkIframeLoaded() {
-            var iframe = document.getElementById('lumabot-iframe');
-            if (iframe) {
-                hideElementInIframe();
-            } else {
-                // Iframe not yet created, retry after a short delay
-                setTimeout(checkIframeLoaded, 100);
-            }
-        }
-
-        window.onload = function () {
-            // Monitor the widget button click to know when to start checking for the iframe
-            var widgetButton = document.querySelector('.your-widget-button-selector'); // Replace with actual selector for the widget button
-            if (widgetButton) {
-                widgetButton.addEventListener('click', function() {
-                    // Start checking for the iframe after widget button is clicked
-                    checkIframeLoaded();
-                });
-            }
-        };
     </script>
 </head>
 
