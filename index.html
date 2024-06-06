@@ -18,19 +18,13 @@
             function hideElementInIframe() {
                 var iframe = document.getElementById('lumabot-iframe');
                 if (iframe) {
-                    var iframeDocument;
                     try {
-                        iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                        if (iframeDocument.readyState === 'complete') {
-                            var elementToHide = iframeDocument.querySelector('.jss1180');
-                            if (elementToHide) {
-                                elementToHide.style.display = 'none';
-                            } else {
-                                // Element not found, retry after a short delay
-                                setTimeout(hideElementInIframe, 100);
-                            }
+                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        var elementToHide = iframeDocument.querySelector('.jss1180');
+                        if (elementToHide) {
+                            elementToHide.style.display = 'none';
                         } else {
-                            // Iframe is not fully loaded, retry after a short delay
+                            // Retry hiding the element after a short delay
                             setTimeout(hideElementInIframe, 100);
                         }
                     } catch (e) {
@@ -39,26 +33,19 @@
                         setTimeout(hideElementInIframe, 100);
                     }
                 } else {
-                    // Iframe not found, retry after a short delay
+                    // Retry if the iframe is not found
                     setTimeout(hideElementInIframe, 100);
                 }
             }
 
+            // Listen for document readiness and initialize LumaBot
             let stateCheck = setInterval(() => {
                 if (document.readyState === 'complete') {
                     clearInterval(stateCheck);
                     w.luma.init(u);
-
-                    // Listen for iframe creation after widget interaction
-                    document.addEventListener('click', function(event) {
-                        var widgetButton = event.target.closest('.lumabot-button'); // Replace with actual selector for the widget button
-                        if (widgetButton) {
-                            // Start checking for the iframe after widget button is clicked
-                            setTimeout(function() {
-                                hideElementInIframe();
-                            }, 100); // Slight delay to ensure iframe starts loading
-                        }
-                    });
+                    
+                    // Continuously check for iframe creation and hide element inside it
+                    setInterval(hideElementInIframe, 100);
                 }
             }, 100);
         })(window, document, 'script', '662159dec1f7560017a73797');
