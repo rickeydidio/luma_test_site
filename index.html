@@ -23,21 +23,52 @@
         })(window, document, 'script', '662159dec1f7560017a73797');
     </script>
     <script>
-        window.onload = function () {
+        function hideElementInIframe() {
             var iframe = document.getElementById('lumabot-iframe');
-
             if (iframe) {
-                iframe.onload = function () {
-                    try {
-                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                        var elementToHide = iframeDocument.querySelector('.jss1180');
-                        if (elementToHide) {
-                            elementToHide.style.display = 'none';
-                        }
-                    } catch (e) {
-                        console.error('Could not access iframe content:', e);
+                var iframeDocument;
+                try {
+                    iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                } catch (e) {
+                    console.error('Could not access iframe content:', e);
+                    return;
+                }
+                if (iframeDocument.readyState === 'complete') {
+                    var elementToHide = iframeDocument.querySelector('.jss1180');
+                    if (elementToHide) {
+                        elementToHide.style.display = 'none';
+                    } else {
+                        // Element not found, retry after a short delay
+                        setTimeout(hideElementInIframe, 100);
                     }
-                };
+                } else {
+                    // Iframe is not fully loaded, retry after a short delay
+                    setTimeout(hideElementInIframe, 100);
+                }
+            } else {
+                // Iframe not found, retry after a short delay
+                setTimeout(hideElementInIframe, 100);
+            }
+        }
+
+        function checkIframeLoaded() {
+            var iframe = document.getElementById('lumabot-iframe');
+            if (iframe) {
+                hideElementInIframe();
+            } else {
+                // Iframe not yet created, retry after a short delay
+                setTimeout(checkIframeLoaded, 100);
+            }
+        }
+
+        window.onload = function () {
+            // Monitor the widget button click to know when to start checking for the iframe
+            var widgetButton = document.querySelector('.your-widget-button-selector'); // Replace with actual selector for the widget button
+            if (widgetButton) {
+                widgetButton.addEventListener('click', function() {
+                    // Start checking for the iframe after widget button is clicked
+                    checkIframeLoaded();
+                });
             }
         };
     </script>
