@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,6 @@
                 r = Math.ceil(new Date() / 3e5) * 3e5;
             j.src = 'https://bot.lumahealthstatic.com/widgets/lumabot.min.js?r=' + r;
             f.parentNode.insertBefore(j, f);
-
             let stateCheck = setInterval(() => {
                 if (document.readyState === 'complete') {
                     clearInterval(stateCheck);
@@ -22,12 +22,25 @@
             }, 100);
         })(window, document, 'script', '662159dec1f7560017a73797');
     </script>
-    <style>
-        #lumabot-iframe {
-            display: none;
+    <script>
+    window.onload = function() {
+        var iframe = document.getElementById('lumabot-iframe');
+        if (iframe) {
+            var checkIframeLoaded = setInterval(() => {
+                var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDocument.readyState === 'complete') {
+                    clearInterval(checkIframeLoaded);
+                    var elementToHide = iframeDocument.querySelector('.jss1180');
+                    if (elementToHide) {
+                        elementToHide.style.display = 'none';
+                    }
+                }
+            }, 100);
         }
-    </style>
+    };
+    </script>
 </head>
+
 <body>
     <header>
         <nav>
@@ -62,41 +75,7 @@
             <h1>Forms</h1>
             <p>Downloadable forms for patients.</p>
         </section>
-        <iframe id="lumabot-iframe" src="about:blank"></iframe>
     </main>
-    <script>
-        window.addEventListener('load', function() {
-            var iframe = document.getElementById('lumabot-iframe');
-            iframe.style.display = 'block'; // Show the iframe once the page is loaded
-
-            iframe.addEventListener('load', function() {
-                try {
-                    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                    var elementToHide = iframeDocument.querySelector('.jss1180');
-                    if (elementToHide) {
-                        elementToHide.style.display = 'none';
-                    } else {
-                        var checkInterval = setInterval(function() {
-                            try {
-                                elementToHide = iframeDocument.querySelector('.jss1180');
-                                if (elementToHide) {
-                                    elementToHide.style.display = 'none';
-                                    clearInterval(checkInterval);
-                                }
-                            } catch (e) {
-                                console.error('Could not access iframe content:', e);
-                                clearInterval(checkInterval);
-                            }
-                        }, 100);
-                    }
-                } catch (e) {
-                    console.error('Could not access iframe content:', e);
-                }
-            });
-
-            // Set the actual src of the iframe
-            iframe.src = 'https://bot.lumahealthstatic.com/widgets/lumabot.min.js?r=' + Math.ceil(new Date() / 3e5) * 3e5;
-        });
-    </script>
 </body>
+
 </html>
