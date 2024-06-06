@@ -51,8 +51,9 @@
 
                     // Listen for iframe creation after widget interaction
                     document.addEventListener('click', function(event) {
-                        var widgetButton = event.target.closest('.your-widget-button-selector'); // Replace with actual selector for the widget button
+                        var widgetButton = event.target.closest('.lumabot-button'); // Replace with actual selector for the widget button
                         if (widgetButton) {
+                            // Start checking for the iframe after widget button is clicked
                             setTimeout(function() {
                                 hideElementInIframe();
                             }, 100); // Slight delay to ensure iframe starts loading
