@@ -23,21 +23,23 @@
         })(window, document, 'script', '662159dec1f7560017a73797');
     </script>
     <script>
-    window.onload = function() {
-        var iframe = document.getElementById('lumabot-iframe');
-        if (iframe) {
-            var checkIframeLoaded = setInterval(() => {
-                var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                if (iframeDocument.readyState === 'complete') {
-                    clearInterval(checkIframeLoaded);
-                    var elementToHide = iframeDocument.querySelector('.jss1180');
-                    if (elementToHide) {
-                        elementToHide.style.display = 'none';
+        window.onload = function () {
+            var iframe = document.getElementById('lumabot-iframe');
+
+            if (iframe) {
+                iframe.onload = function () {
+                    try {
+                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        var elementToHide = iframeDocument.querySelector('.jss1180');
+                        if (elementToHide) {
+                            elementToHide.style.display = 'none';
+                        }
+                    } catch (e) {
+                        console.error('Could not access iframe content:', e);
                     }
-                }
-            }, 100);
-        }
-    };
+                };
+            }
+        };
     </script>
 </head>
 
