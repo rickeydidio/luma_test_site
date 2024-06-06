@@ -14,40 +14,61 @@
                 r = Math.ceil(new Date() / 3e5) * 3e5;
             j.src = 'https://bot.lumahealthstatic.com/widgets/lumabot.min.js?r=' + r;
             f.parentNode.insertBefore(j, f);
-            
-            function hideElementInIframe() {
-                var iframe = document.getElementById('lumabot-iframe');
-                if (iframe) {
-                    try {
-                        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                        var elementToHide = iframeDocument.querySelector('.jss1180');
-                        if (elementToHide) {
-                            elementToHide.style.display = 'none';
-                        } else {
-                            // Retry hiding the element after a short delay
-                            setTimeout(hideElementInIframe, 100);
-                        }
-                    } catch (e) {
-                        console.error('Could not access iframe content:', e);
-                        // Retry after a short delay
-                        setTimeout(hideElementInIframe, 100);
+
+            function hideElementInIframe(iframe) {
+                try {
+                    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                    var elementToHide = iframeDocument.querySelector('.jss1180');
+                    if (elementToHide) {
+                        elementToHide.style.display = 'none';
+                    } else {
+                        // Observe changes in the iframe's DOM to find the element later
+                        var observer = new MutationObserver(function (mutations) {
+                            mutations.forEach(function (mutation) {
+                                if (mutation.addedNodes.length > 0) {
+                                    var element = iframeDocument.querySelector('.jss1180');
+                                    if (element) {
+                                        element.style.display = 'none';
+                                        observer.disconnect(); // Stop observing once the element is hidden
+                                    }
+                                }
+                            });
+                        });
+                        observer.observe(iframeDocument, { childList: true, subtree: true });
                     }
-                } else {
-                    // Retry if the iframe is not found
-                    setTimeout(hideElementInIframe, 100);
+                } catch (e) {
+                    console.error('Could not access iframe content:', e);
                 }
             }
 
-            // Listen for document readiness and initialize LumaBot
+            function onIframeLoad(event) {
+                if (event.target.id === 'lumabot-iframe') {
+                    hideElementInIframe(event.target);
+                }
+            }
+
             let stateCheck = setInterval(() => {
                 if (document.readyState === 'complete') {
                     clearInterval(stateCheck);
                     w.luma.init(u);
-                    
-                    // Continuously check for iframe creation and hide element inside it
-                    setInterval(hideElementInIframe, 100);
+
+                    // Observe changes in the DOM to detect the insertion of the iframe
+                    var observer = new MutationObserver(function (mutations) {
+                        mutations.forEach(function (mutation) {
+                            mutation.addedNodes.forEach(function (node) {
+                                if (node.tagName === 'IFRAME' && node.id === 'lumabot-iframe') {
+                                    hideElementInIframe(node);
+                                }
+                            });
+                        });
+                    });
+
+                    observer.observe(document.body, { childList: true, subtree: true });
                 }
             }, 100);
+
+            // Listen for the iframe load event
+            window.addEventListener('load', onIframeLoad, true);
         })(window, document, 'script', '662159dec1f7560017a73797');
     </script>
 </head>
