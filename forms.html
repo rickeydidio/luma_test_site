@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forms</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Make sure to link your CSS file -->
+    <title>Rickey's Luma Test Site - Forms</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        (function (w, d, s, u) {
+            w.luma = w.luma || {};
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                r = Math.ceil(new Date() / 3e5) * 3e5;
+            j.src = 'https://bot.lumahealthstatic.com/widgets/lumabot.min.js?r=' + r;
+            f.parentNode.insertBefore(j, f);
+            let stateCheck = setInterval(() => {
+                if (document.readyState === 'complete') {
+                    clearInterval(stateCheck);
+                    w.luma.init(u);
+                }
+            });
+        })(window, document, 'script', '662159dec1f7560017a73797');
+    </script>
 </head>
 <body>
     <header>
